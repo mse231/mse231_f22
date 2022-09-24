@@ -28,7 +28,7 @@ url: "https://mse231.github.io/mse231_f22" # the base hostname & protocol for yo
 github_username: mse231
 
 # Build settings
-remote_theme: pages-themes/cayman@v0.2.0
+theme: jekyll-theme-cayman
 plugins:
   - jekyll-feed
   - jekyll-remote-theme
