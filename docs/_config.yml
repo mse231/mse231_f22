@@ -24,7 +24,7 @@ description: >- # this means to ignore newlines until "baseurl:"
     Course website for Stanford MS&E 231, Fall 2022.
 domain: mse231.github.io
 baseurl: "/docs" # the subpath of your site, e.g. /blog
-url: "https://mse231.github.io/mse231_f22" # the base hostname & protocol for your site, e.g. http://example.com
+url: "https://mse231.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 github_username: mse231
 
 # Build settings
