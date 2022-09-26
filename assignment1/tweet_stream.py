@@ -6,7 +6,7 @@ import datetime
 import gzip
 import sys
 
-from tweepy import OAuthHandler, Stream, Client, StreamingClient, StreamRule, Paginator
+from tweepy import Stream, Client, StreamingClient, StreamRule, Paginator
 
 
 class CustomStreamingClient(StreamingClient):
@@ -62,7 +62,7 @@ if __name__ == "__main__":
     # Write tweets to stdout or a gzipped file, as requested
     if flags.gzip:
         # Write to gzipped file
-        f = gzip.open(flags.gzip, "wt")
+        f = gzip.open(flags.gzip, "wb")
         eprint("Writing gzipped output to %s" % flags.gzip)
         output = f.write
     else:
@@ -71,7 +71,7 @@ if __name__ == "__main__":
 
     # Track time and start streaming
     starttime = datetime.datetime.now()
-    twitter_streaming_client = CustomStreamingClient(bearer_token=creds["bearer_token"])
+    twitter_streaming_client = CustomStreamingClient(write=output, bearer_token=creds["bearer_token"])
     twitter_client = Client(bearer_token=creds["bearer_token"])
     eprint("Started running at", starttime)
 
