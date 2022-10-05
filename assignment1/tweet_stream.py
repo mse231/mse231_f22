@@ -4,7 +4,9 @@
 import argparse
 import datetime
 import gzip
+import os
 import sys
+import time
 
 from tweepy import Stream, Client, StreamingClient, StreamRule, Paginator
 
@@ -64,7 +66,8 @@ if __name__ == "__main__":
         # Write to gzipped file
         f = gzip.open(flags.gzip, "wb")
         eprint("Writing gzipped output to %s" % flags.gzip)
-        output = f.write
+        sep = os.linesep.encode()
+        output = lambda x: f.write(x + sep)
     else:
         # write to stdout
         output = print
@@ -84,6 +87,7 @@ if __name__ == "__main__":
         else:
             # Sample random tweets
             while True:
+                time.sleep(0.1)
                 twitter_streaming_client.sample()
     except KeyboardInterrupt:
         eprint()
