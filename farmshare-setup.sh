@@ -21,7 +21,6 @@ cd ~
 echo 'PATH="$HOME/local/python-3.10.7/bin:$PATH"' >> ~/.profile
 source ~/.profile
 pip install --user tweepy
-git clone https://github.com/mse231/mse231_f22
 rm -rf Python-3.10.7.tgz
 rm -rf Python-3.10.7
 rm -rf OpenSSL_1_1_1q.tar.gz
