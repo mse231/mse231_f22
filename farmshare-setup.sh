@@ -25,3 +25,4 @@ rm -rf Python-3.10.7.tgz
 rm -rf Python-3.10.7
 rm -rf OpenSSL_1_1_1q.tar.gz
 rm -rf openssl-OpenSSL_1_1_1q
+echo "DONE"
