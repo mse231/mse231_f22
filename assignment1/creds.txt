@@ -1,6 +1,5 @@
-api_key	<YOUR_API_KEY>
-api_secret	<YOUR_API_SECRET>
-token	<YOUR_TOKEN>
-token_secret	<YOUR_TOKEN_SECRET>
-bearer_token	<YOUR_BEARER_TOKEN>
-
+api_key        <YOUR_API_KEY>
+api_secret     <YOUR_API_SECRET>
+token          <YOUR_TOKEN>
+token_secret   <YOUR_TOKEN_SECRET>
+bearer_token   <YOUR_BEARER_TOKEN>
