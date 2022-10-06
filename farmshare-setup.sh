@@ -1,3 +1,4 @@
+#!/bin/bash
 cd ~
 wget https://github.com/openssl/openssl/archive/refs/tags/OpenSSL_1_1_1q.tar.gz
 wget https://www.python.org/ftp/python/3.10.7/Python-3.10.7.tgz
@@ -26,3 +27,4 @@ rm -rf Python-3.10.7
 rm -rf OpenSSL_1_1_1q.tar.gz
 rm -rf openssl-OpenSSL_1_1_1q
 echo "DONE"
+echo "Please log out of FarmShare and back in"
