@@ -14,10 +14,12 @@ MAX_TWEETS = 500000
 
 class CustomStreamingClient(StreamingClient):
     total_tweets = 0
+    sunset_time = datetime.datetime.now()
 
     def __init__(self, write=print, **kwds):
         super(CustomStreamingClient, self).__init__(**kwds)
         self.write = write
+        self.sunset_time = datetime.datetime.now() + datetime.timedelta(hours=24)
 
     def on_tweet(self, tweet):
         self.write(tweet.data)
@@ -36,8 +38,16 @@ class CustomStreamingClient(StreamingClient):
         # You can modify the below code to e.g. manually the adjust the rate
         # at which you pull tweets, modify the cutoff, etc.
         if self.total_tweets > 0.8 * MAX_TWEETS:
+            eprint("Read " + str(self.total_tweets) + " tweets, terminating to avoid hitting 500k maximum")
             time.sleep(1)
             self.disconnect()
+            return
+
+        if datetime.datetime.now() > self.sunset_time:
+            eprint("Process has been reading tweets for 24 hours. Terminating")
+            self.disconnect()
+            return
+
         self.write(raw_data)
         self.total_tweets += 1
 
