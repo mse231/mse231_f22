@@ -10,8 +10,11 @@ import time
 
 from tweepy import Stream, Client, StreamingClient, StreamRule, Paginator
 
+MAX_TWEETS = 500000
 
 class CustomStreamingClient(StreamingClient):
+    total_tweets = 0
+
     def __init__(self, write=print, **kwds):
         super(CustomStreamingClient, self).__init__(**kwds)
         self.write = write
@@ -20,7 +23,23 @@ class CustomStreamingClient(StreamingClient):
         self.write(tweet.data)
 
     def on_data(self, raw_data):
+        """
+        on_data handles what to do when the client streams a tweet (in bytes).
+        The usual behavior is to hand the tweet to self.write, which itself is
+        configured in the constructor. But Twitter imposes a 500,000 tweet/month
+        limit on how many tweets you can pull down through a filtered stream.
+        If we get within 20% of that limit, we stop streaming. Note that you may
+        be asked to pull more tweets down for assignment 2, so be careful about
+        hitting the 500,000 limit too early!
+        """
+
+        # You can modify the below code to e.g. manually the adjust the rate
+        # at which you pull tweets, modify the cutoff, etc.
+        if self.total_tweets > 0.8 * MAX_TWEETS:
+            time.sleep(1)
+            self.disconnect()
         self.write(raw_data)
+        self.total_tweets += 1
 
     def on_error(self, status_code):
         eprint(status_code)
@@ -117,5 +136,5 @@ if __name__ == "__main__":
         eprint("Closing %s" % flags.gzip)
         f.close()
 
-    eprint("Total run time", datetime.datetime.now() - starttime)
+    eprint("total run time", datetime.datetime.now() - starttime)
 
