@@ -76,14 +76,32 @@ if __name__ == "__main__":
     starttime = datetime.datetime.now()
     twitter_streaming_client = CustomStreamingClient(write=output, bearer_token=creds["bearer_token"])
     twitter_client = Client(bearer_token=creds["bearer_token"])
-    eprint("Started running at", starttime)
 
+    # Clear out old rules
+    old_rules = twitter_streaming_client.get_rules()
+    if old_rules.data is not None:
+        rule_ids = [rule.id for rule in old_rules.data]
+        twitter_streaming_client.delete_rules(rule_ids)
+
+    # Start streaming
+    eprint("Started running at", starttime)
     try:
         if flags.filter:
-            # Track specific tweets
             query = " ".join(flags.filter) + " lang:en"
+            # Get tweet counts for this query for the past week
+            counts = twitter_client.get_recent_tweets_count(query=query, granularity='day')
+            eprint("Last 7 days of tweet counts for query: " + query)
+            eprint("start_time | tweet_count")
+            warning = False
+            for count in counts.data:
+                eprint(count['start'], "|", count['tweet_count'])
+                warning = warning or count['tweet_count'] > 300000
+            if warning:
+                eprint("WARNING: You might exceed the 500,000 tweet account limit with this query!")
+            time.sleep(1)
+            # Track specific tweets
             twitter_streaming_client.add_rules(StreamRule(query))
-            twitter_streaming_client.filter()
+            twitter_streaming_client.filter(tweet_fields='created_at', expansions=['author_id', 'referenced_tweets.id.author_id'])
         else:
             # Sample random tweets
             while True:
