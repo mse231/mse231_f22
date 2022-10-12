@@ -10,7 +10,7 @@ import time
 
 from tweepy import Stream, Client, StreamingClient, StreamRule, Paginator
 
-MAX_TWEETS = 500000
+MAX_TWEETS = 50
 
 class CustomStreamingClient(StreamingClient):
     total_tweets = 0
@@ -20,6 +20,12 @@ class CustomStreamingClient(StreamingClient):
         super(CustomStreamingClient, self).__init__(**kwds)
         self.write = write
         self.sunset_time = datetime.datetime.now() + datetime.timedelta(hours=24)
+
+    def is_maxed_out(self):
+        return self.total_tweets > 0.8 * MAX_TWEETS
+
+    def is_sunset(self):
+        return datetime.datetime.now() > self.sunset_time
 
     def on_tweet(self, tweet):
         self.write(tweet.data)
@@ -37,13 +43,13 @@ class CustomStreamingClient(StreamingClient):
 
         # You can modify the below code to e.g. manually the adjust the rate
         # at which you pull tweets, modify the cutoff, etc.
-        if self.total_tweets > 0.8 * MAX_TWEETS:
+        if self.is_maxed_out():
             eprint("Read " + str(self.total_tweets) + " tweets, terminating to avoid hitting 500k maximum")
             time.sleep(1)
             self.disconnect()
             return
 
-        if datetime.datetime.now() > self.sunset_time:
+        if self.is_sunset():
             eprint("Process has been reading tweets for 24 hours. Terminating")
             self.disconnect()
             return
@@ -133,8 +139,8 @@ if __name__ == "__main__":
             twitter_streaming_client.filter(tweet_fields='created_at', expansions=['author_id', 'referenced_tweets.id.author_id'])
         else:
             # Sample random tweets
-            while True:
-                time.sleep(0.1)
+            while True and not(twitter_streaming_client.is_maxed_out() or twitter_streaming_client.is_sunset()):
+                time.sleep(1)
                 twitter_streaming_client.sample()
     except KeyboardInterrupt:
         eprint()
